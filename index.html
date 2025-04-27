@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能计算器</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #e74c3c;
+            --bg: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: var(--bg);
+        }
+
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 3px solid var(--accent);
+            margin-bottom: 30px;
+        }
+
+        .calculator {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        label {
+            font-size: 1.2em;
+            color: var(--primary);
+            min-width: 140px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            font-size: 1.1em;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            max-width: 250px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+            outline: none;
+        }
+
+        button {
+            background: var(--accent);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: transform 0.2s, background 0.3s;
+        }
+
+        button:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        #result {
+            margin-top: 30px;
+            padding: 25px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .tips {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff3cd;
+            border-radius: 6px;
+            color: #856404;
+        }
+
+        @media (max-width: 600px) {
+            .calculator {
+                padding: 20px;
+            }
+
+            input {
+                max-width: 100%;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>🥟 家用计算器</h1>
+    
+    <div class="calculator">
+        <form id="mainForm">
+            <div class="input-group">
+                <label for="meatInput">肉重量（斤）：</label>
+                <input 
+                    type="text"
+                    id="meatInput"
+                    inputmode="decimal"
+                    pattern="^\d+(\.\d{1,2})?$"
+                    placeholder="例如：20"
+                    required
+                >
+                <button type="submit">立即计算</button>
+            </div>
+        </form>
+
+        <div class="tips">
+            <strong>使用提示：</strong>
+            <ul>
+                <li>葱姜不要重复放</li>
+            </ul>
+        </div>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // 输入过滤和格式化
+        document.getElementById('meatInput').addEventListener('input', function(e) {
+            let value = this.value;
+            
+            // 过滤非法字符
+            value = value
+                .replace(/[^\d.]/g, '')          // 只允许数字和小数点
+                .replace(/(\..*)\./g, '$1')      // 保留第一个小数点
+                .replace(/^\./g, '')             // 不能以小数点开头
+                .replace(/(\.\d{2}).*/g, '$1');  // 限制两位小数
+            
+            this.value = value;
+        });
+
+        // 表单提交处理
+        document.getElementById('mainForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const input = document.getElementById('meatInput');
+            const resultDiv = document.getElementById('result');
+            
+            try {
+                const meatWeight = parseFloat(input.value);
+                
+                if (isNaN(meatWeight) || meatWeight <= 0) {
+                    throw new Error('请输入有效的正数');
+                }
+
+                // 计算核心参数
+                const baseWeight = 21;
+                
+                const water = (meatWeight * 8 / baseWeight).toFixed(2);
+                const salt = (meatWeight * 126 / baseWeight).toFixed(2);
+                const chickenEssence = (meatWeight * 126 / baseWeight).toFixed(2);
+                const monosodiumGlutamate = (meatWeight * 252 / baseWeight).toFixed(2);
+                const gingerScallion = (meatWeight * 378 / baseWeight).toFixed(2);
+                const gingerPowder = (meatWeight * 54 / baseWeight).toFixed(2);
+                const sugar = (meatWeight * 50 / baseWeight).toFixed(2);
+                const pepper = (meatWeight * 20 / baseWeight).toFixed(2);
+                const thirteenSpices = (meatWeight * 8 / baseWeight).toFixed(2);
+                const soySauce = (meatWeight * 126 / baseWeight).toFixed(2);
+                const weijixian = (meatWeight * 336 / baseWeight).toFixed(2);
+
+                // 构建结果展示
+                resultDiv.innerHTML = `
+                    <h4>配方计算结果（肉重：${meatWeight}斤）</h4>
+                    <p>💧 水：${water}斤 (${water*500}g)</p>
+                    <p>🧂 盐：${salt}g</p>
+                    <p>🍗 鸡精：${chickenEssence}g</p>
+                    <p>✨ 味精：${monosodiumGlutamate}g</p>
+                    <p>🟡 姜粉：${gingerPowder}g</p>
+                    <p>🍬 糖：${sugar}g</p>
+                    <p>🌶️ 胡椒粉：${pepper}g</p>
+                    <p>🌟 十三香：${thirteenSpices}g</p>
+                    <p>⚫ 生抽、老抽：${soySauce}g（1:1）</p>
+                    <p>🍶 味极鲜：${weijixian}g</p>
+                    <div style='margin-top:20px;background:#f8f9fa;padding:15px;border-radius:5px;'>
+                        <p>🧅 生姜：${gingerScallion}g</p>
+                        <strong>👨🍳 厨师建议：</strong>
+                        <ul>
+                            <li>水量可根据肉的老嫩程度增减5%</li>
+                        </ul>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div style="color:${getComputedStyle(document.documentElement)
+                        .getPropertyValue('--accent')};padding:15px;">
+                        ⚠️ 错误：${error.message}
+                    </div>
+                `;
+                input.focus();
+            }
+        });
+    </script>
+</body>
+</html>
